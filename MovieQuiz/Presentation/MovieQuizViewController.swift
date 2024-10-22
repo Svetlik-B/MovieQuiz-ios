@@ -9,11 +9,23 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private var counterLabel: UILabel!
     
     @IBAction func noButtonClicked(_ sender: UIButton) {
+        let answer = false
+        let question = questions[currentQuestionIndex]
+        let correctAnswer = question.correctAnswer
+        showAnswerResult(isCorrect: answer == correctAnswer)
     }
     
     @IBAction func yesButtonClicked(_ sender: UIButton) {
+        let answer = true
+        let question = questions[currentQuestionIndex]
+        let correctAnswer = question.correctAnswer
+        showAnswerResult(isCorrect: answer == correctAnswer)
     }
     
+    private func showAnswerResult(isCorrect: Bool) {
+        
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         show(
