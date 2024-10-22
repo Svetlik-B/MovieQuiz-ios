@@ -23,7 +23,12 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showAnswerResult(isCorrect: Bool) {
-        
+        imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 10
+        imageView.layer.borderColor = isCorrect
+            ? UIColor(named: "YP Green")?.cgColor
+            : UIColor(named: "YP Red")?.cgColor
+        imageView.layer.cornerRadius = 20
     }
 
     override func viewDidLoad() {
