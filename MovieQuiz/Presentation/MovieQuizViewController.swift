@@ -16,16 +16,41 @@ final class MovieQuizViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        show(
+            quiz: convert(
+                model: questions[currentQuestionIndex]
+            )
+        )
     }
-}
+    struct QuizQuestion {
+        let image: String
+        let text: String
+        let correctAnswer: Bool
+    }
+    
+    struct QuizStepViewModel {
+      let image: UIImage?
+      let question: String
+      let questionNumber: String
+    }
+    
+    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+        let total = questions.count
+        let questionNumber = "\(currentQuestionIndex + 1)/\(total)"
+        return .init(
+            image: UIImage(named: model.image),
+            question: model.text,
+            questionNumber: questionNumber
+        )
+    }
+    
+    private func show(quiz step: QuizStepViewModel) {
+        counterLabel.text = step.questionNumber
+        imageView.image = step.image
+        textLabel.text = step.question
+    }
 
-struct QuizQuestion {
-  let image: String
-  let text: String
-  let correctAnswer: Bool
-}
-
-private let questions: [QuizQuestion] = [
+    private let questions: [QuizQuestion] = [
         QuizQuestion(
             image: "The Godfather",
             text: "Рейтинг этого фильма больше чем 6?",
@@ -67,8 +92,9 @@ private let questions: [QuizQuestion] = [
             text: "Рейтинг этого фильма больше чем 6?",
             correctAnswer: false)
     ]
-
-
+    private var currentQuestionIndex = 0
+    private var correctAnswers = 0
+}
 /*
  Mock-данные
  
