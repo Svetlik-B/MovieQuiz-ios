@@ -29,6 +29,42 @@ final class MovieQuizViewController: UIViewController {
             ? UIColor(named: "YP Green")?.cgColor
             : UIColor(named: "YP Red")?.cgColor
         imageView.layer.cornerRadius = 20
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+           self.showNextQuestionOrResults()
+        }
+    }
+    
+    private func showNextQuestionOrResults() {
+        if currentQuestionIndex == questions.count - 1 {
+            let alert = UIAlertController(
+                title: "My Alert",
+                message: "This is an alert.",
+                preferredStyle: .alert
+            )
+            let action = UIAlertAction(
+                title: "Сыграть ещё раз",
+                style: .default
+            ) { _ in
+                self.currentQuestionIndex = 0
+                self.show(
+                    quiz: self.convert(
+                        model: self.questions[self.currentQuestionIndex]
+                    )
+                )
+            }
+            
+            alert.addAction(action)
+
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            currentQuestionIndex += 1
+            show(
+                quiz: convert(
+                    model: questions[currentQuestionIndex]
+                )
+            )
+        }
     }
 
     override func viewDidLoad() {
@@ -76,38 +112,38 @@ final class MovieQuizViewController: UIViewController {
             image: "The Dark Knight",
             text: "Рейтинг этого фильма больше чем 6?",
             correctAnswer: true),
-        QuizQuestion(
-            image: "Kill Bill",
-            text: "Рейтинг этого фильма больше чем 6?",
-            correctAnswer: true),
-        QuizQuestion(
-            image: "The Avengers",
-            text: "Рейтинг этого фильма больше чем 6?",
-            correctAnswer: true),
-        QuizQuestion(
-            image: "Deadpool",
-            text: "Рейтинг этого фильма больше чем 6?",
-            correctAnswer: true),
-        QuizQuestion(
-            image: "The Green Knight",
-            text: "Рейтинг этого фильма больше чем 6?",
-            correctAnswer: true),
-        QuizQuestion(
-            image: "Old",
-            text: "Рейтинг этого фильма больше чем 6?",
-            correctAnswer: false),
-        QuizQuestion(
-            image: "The Ice Age Adventures of Buck Wild",
-            text: "Рейтинг этого фильма больше чем 6?",
-            correctAnswer: false),
-        QuizQuestion(
-            image: "Tesla",
-            text: "Рейтинг этого фильма больше чем 6?",
-            correctAnswer: false),
-        QuizQuestion(
-            image: "Vivarium",
-            text: "Рейтинг этого фильма больше чем 6?",
-            correctAnswer: false)
+//        QuizQuestion(
+//            image: "Kill Bill",
+//            text: "Рейтинг этого фильма больше чем 6?",
+//            correctAnswer: true),
+//        QuizQuestion(
+//            image: "The Avengers",
+//            text: "Рейтинг этого фильма больше чем 6?",
+//            correctAnswer: true),
+//        QuizQuestion(
+//            image: "Deadpool",
+//            text: "Рейтинг этого фильма больше чем 6?",
+//            correctAnswer: true),
+//        QuizQuestion(
+//            image: "The Green Knight",
+//            text: "Рейтинг этого фильма больше чем 6?",
+//            correctAnswer: true),
+//        QuizQuestion(
+//            image: "Old",
+//            text: "Рейтинг этого фильма больше чем 6?",
+//            correctAnswer: false),
+//        QuizQuestion(
+//            image: "The Ice Age Adventures of Buck Wild",
+//            text: "Рейтинг этого фильма больше чем 6?",
+//            correctAnswer: false),
+//        QuizQuestion(
+//            image: "Tesla",
+//            text: "Рейтинг этого фильма больше чем 6?",
+//            correctAnswer: false),
+//        QuizQuestion(
+//            image: "Vivarium",
+//            text: "Рейтинг этого фильма больше чем 6?",
+//            correctAnswer: false)
     ]
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
