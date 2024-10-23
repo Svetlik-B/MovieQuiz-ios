@@ -32,6 +32,8 @@ final class MovieQuizViewController: UIViewController {
         } else {
             setImageBorder(color: UIColor(named: "YP Red"))
         }
+        noButton.isEnabled = false
+        yesButton.isEnabled = false
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
            self.showNextQuestionOrResults()
@@ -109,6 +111,8 @@ final class MovieQuizViewController: UIViewController {
         counterLabel.text = step.questionNumber
         imageView.image = step.image
         textLabel.text = step.question
+        yesButton.isEnabled = true
+        noButton.isEnabled = true
     }
     
     private func show(quiz result: QuizResultsViewModel) {
