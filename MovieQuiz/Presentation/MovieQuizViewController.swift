@@ -42,14 +42,10 @@ final class MovieQuizViewController: UIViewController {
     
     private func setImageBorder(color: UIColor?) {
         guard let color else {
-            imageView.layer.borderWidth = 0
-            imageView.layer.borderColor = nil
-            imageView.layer.cornerRadius = 0
+            imageView.layer.borderColor = UIColor.clear.cgColor
             return
         }
-        imageView.layer.borderWidth = 8
         imageView.layer.borderColor = color.cgColor
-        imageView.layer.cornerRadius = 20
     }
     
     private func showNextQuestionOrResults() {
@@ -73,6 +69,8 @@ final class MovieQuizViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        imageView.layer.cornerRadius = 20
+        imageView.layer.borderWidth = 8
         show(
             quiz: convert(
                 model: questions[currentQuestionIndex]
