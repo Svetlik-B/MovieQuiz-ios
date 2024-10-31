@@ -35,8 +35,8 @@ final class MovieQuizViewController: UIViewController {
         noButton.isEnabled = false
         yesButton.isEnabled = false
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-           self.showNextQuestionOrResults()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.showNextQuestionOrResults()
         }
     }
     
@@ -122,7 +122,8 @@ final class MovieQuizViewController: UIViewController {
         let action = UIAlertAction(
             title: result.buttonText,
             style: .default
-        ) { _ in
+        ) { [weak self] _ in
+            guard let self else { return }
             self.setImageBorder(color: nil)
             self.correctAnswers = 0
             self.currentQuestionIndex = 0
