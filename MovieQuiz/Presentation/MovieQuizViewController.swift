@@ -77,23 +77,6 @@ final class MovieQuizViewController: UIViewController {
             )
         )
     }
-    struct QuizResultsViewModel {
-      let title: String
-      let text: String
-      let buttonText: String
-    }
-    
-    struct QuizQuestion {
-        let image: String
-        let text: String
-        let correctAnswer: Bool
-    }
-    
-    struct QuizStepViewModel {
-      let image: UIImage?
-      let question: String
-      let questionNumber: String
-    }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let total = questions.count
