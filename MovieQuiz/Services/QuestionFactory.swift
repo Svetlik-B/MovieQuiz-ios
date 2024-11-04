@@ -1,9 +1,15 @@
-struct QuestionFactory: QuestionFactoryProtocol {
-    func requestNextQuestion() -> QuizQuestion? {
+struct QuestionFactory {
+    weak var delegate: QuestionFactoryDelegate?
+}
+
+extension QuestionFactory: QuestionFactoryProtocol {
+    func requestNextQuestion() {
         guard let index = (0..<questions.count).randomElement() else {
-            return nil
+            delegate?.didReceiveNextQuestion(question: nil)
+            return
         }
-        return questions[safe: index]
+        let question = questions[safe: index]
+        delegate?.didReceiveNextQuestion(question: question)
     }
 }
 
