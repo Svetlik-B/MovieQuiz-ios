@@ -95,25 +95,13 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func show(quiz result: QuizResultsViewModel) {
-        let alert = UIAlertController(
+        let model = AlertModel(
             title: result.title,
             message: result.text,
-            preferredStyle: .alert
+            buttonText: result.buttonText
         )
-        let action = UIAlertAction(
-            title: result.buttonText,
-            style: .default
-        ) { [weak self] _ in
-            guard let self else { return }
-            self.setImageBorder(color: nil)
-            self.correctAnswers = 0
-            self.currentQuestionIndex = 0
-            self.questionFactory?.requestNextQuestion()
-        }
-        alert.addAction(action)
-
-        self.present(alert, animated: true, completion: nil)
-
+        let alertPresenter = AlertPresenter(model: model, delegate: self)
+        alertPresenter.present(on: self)
     }
 
     private var currentQuestionIndex = 0
@@ -124,7 +112,7 @@ final class MovieQuizViewController: UIViewController {
     
 }
 
-// MARK: - QuestionFactoryDelegate
+// MARK:  QuestionFactoryDelegate
 extension MovieQuizViewController: QuestionFactoryDelegate {
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question else {
@@ -135,5 +123,16 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
+    }
+}
+
+// MARK: AlertPresenterDelegate
+extension MovieQuizViewController: AlertPresenterDelegate {
+    func onButtonTapped() {
+        setImageBorder(color: nil)
+        correctAnswers = 0
+        currentQuestionIndex = 0
+        questionFactory?.requestNextQuestion()
+
     }
 }
