@@ -1,11 +1,11 @@
 import UIKit
 
-struct AlertPresenter {
+struct ResultAlertPresenter {
     var model: AlertModel
-    weak var delegate: AlertPresenterDelegate?
+    weak var delegate: ResultAlertPresenterDelegate?
 }
 
-extension AlertPresenter {
+extension ResultAlertPresenter {
     func present(on viewController: UIViewController) {
         let alert = UIAlertController(
             title: model.title,

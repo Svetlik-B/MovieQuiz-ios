@@ -82,8 +82,8 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.cornerRadius = 20
         imageView.layer.borderWidth = 8
         
-        self.statisticService = StatisticService()
-        questionFactory = QuestionFactory(delegate: self)
+        self.statisticService = StatisticServiceImplementation()
+        questionFactory = QuestionFactoryImplementation(delegate: self)
         questionFactory?.requestNextQuestion()
     }
     
@@ -111,15 +111,15 @@ final class MovieQuizViewController: UIViewController {
             message: result.text,
             buttonText: result.buttonText
         )
-        let alertPresenter = AlertPresenter(model: model, delegate: self)
+        let alertPresenter = ResultAlertPresenter(model: model, delegate: self)
         alertPresenter.present(on: self)
     }
 
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let questionsAmount: Int = 10
-    private var questionFactory: QuestionFactoryProtocol?
-    private var statisticService: StatisticServiceProtocol?
+    private var questionFactory: QuestionFactory?
+    private var statisticService: StatisticService?
     private var currentQuestion: QuizQuestion?
     
 }
@@ -139,7 +139,7 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
 }
 
 // MARK: AlertPresenterDelegate
-extension MovieQuizViewController: AlertPresenterDelegate {
+extension MovieQuizViewController: ResultAlertPresenterDelegate {
     func onButtonTapped() {
         setImageBorder(color: nil)
         correctAnswers = 0
