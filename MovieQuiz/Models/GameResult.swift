@@ -10,4 +10,7 @@ extension GameResult {
     func isBetterThan(_ another: GameResult) -> Bool {
         correct > another.correct
     }
+    var description: String {
+        return "\(correct)/\(total) (\(date.dateTimeString))"
+    }
 }

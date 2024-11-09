@@ -54,9 +54,19 @@ final class MovieQuizViewController: UIViewController {
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
+            self.statisticService?.store(
+                correct: self.correctAnswers,
+                total: self.questionsAmount
+            )
+            let text = """
+                Ваш результат \(correctAnswers)/\(questionsAmount)
+                Количество сыгранных квизов: \(self.statisticService?.gamesCount ?? 0)
+                Рекорд: \(self.statisticService?.bestGame.description ?? "")
+                Средняя точность: \(String(format: "%.2f", self.statisticService?.totalAccuracy ?? 0))%
+                """
             let viewModel = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
-                text: "Ваш результат \(correctAnswers)/\(questionsAmount)",
+                text: text,
                 buttonText: "Сыграть ещё раз"
             )
             show(quiz: viewModel)
@@ -72,6 +82,7 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.cornerRadius = 20
         imageView.layer.borderWidth = 8
         
+        self.statisticService = StatisticService()
         questionFactory = QuestionFactory(delegate: self)
         questionFactory?.requestNextQuestion()
     }
@@ -108,6 +119,7 @@ final class MovieQuizViewController: UIViewController {
     private var correctAnswers = 0
     private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
+    private var statisticService: StatisticServiceProtocol?
     private var currentQuestion: QuizQuestion?
     
 }
