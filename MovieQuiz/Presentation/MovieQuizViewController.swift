@@ -7,7 +7,7 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
-    
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var noButton: UIButton!
     @IBOutlet private weak var yesButton: UIButton!
     
@@ -27,6 +27,16 @@ final class MovieQuizViewController: UIViewController {
         }
         let correctAnswer = currentQuestion.correctAnswer
         showAnswerResult(isCorrect: answer == correctAnswer)
+    }
+    
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    private func hideLoadingIndicator() {
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
     }
     
     private func showAnswerResult(isCorrect: Bool) {
