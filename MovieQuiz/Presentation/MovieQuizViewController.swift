@@ -39,6 +39,10 @@ final class MovieQuizViewController: UIViewController {
         activityIndicator.stopAnimating()
     }
     
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+    }
+    
     private func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             correctAnswers += 1
@@ -120,8 +124,13 @@ final class MovieQuizViewController: UIViewController {
             title: result.title,
             message: result.text,
             buttonText: result.buttonText
-        )
-        let alertPresenter = ResultAlertPresenter(model: model, delegate: self)
+        ) { [weak self] in
+            self?.setImageBorder(color: nil)
+            self?.correctAnswers = 0
+            self?.currentQuestionIndex = 0
+            self?.questionFactory?.requestNextQuestion()
+        }
+        let alertPresenter = ResultAlertPresenter(model: model)
         alertPresenter.present(on: self)
     }
 
@@ -145,16 +154,5 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
-    }
-}
-
-// MARK: AlertPresenterDelegate
-extension MovieQuizViewController: ResultAlertPresenterDelegate {
-    func onButtonTapped() {
-        setImageBorder(color: nil)
-        correctAnswers = 0
-        currentQuestionIndex = 0
-        questionFactory?.requestNextQuestion()
-
     }
 }
