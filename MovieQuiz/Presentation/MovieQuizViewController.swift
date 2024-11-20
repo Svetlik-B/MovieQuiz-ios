@@ -109,15 +109,18 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.borderWidth = 8
         
         self.statisticService = StatisticServiceImplementation()
-        questionFactory = QuestionFactoryImplementation(delegate: self)
-        questionFactory?.requestNextQuestion()
+        questionFactory = QuestionFactory(
+            moviesLoader: MoviesLoader(),
+            delegate: self
+        )
+        questionFactory?.loadData()
     }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let total = questionsAmount
         let questionNumber = "\(currentQuestionIndex + 1)/\(total)"
         return .init(
-            image: UIImage(named: model.image),
+            image: UIImage(data: model.image),
             question: model.text,
             questionNumber: questionNumber
         )
@@ -149,7 +152,7 @@ final class MovieQuizViewController: UIViewController {
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let questionsAmount: Int = 10
-    private var questionFactory: QuestionFactory?
+    private var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticService?
     private var currentQuestion: QuizQuestion?
     
@@ -166,5 +169,12 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
+    }
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
+    }
+    func didLoadDataFromServer() {
+        activityIndicator.isHidden = true
+        questionFactory?.requestNextQuestion()
     }
 }

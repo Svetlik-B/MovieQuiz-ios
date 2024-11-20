@@ -5,8 +5,12 @@ protocol MoviesLoading {
 }
 
 private var mostPopularMoviesUrl = URL(
-    string: "https://tv-api.com/en/API/Top250Movies/k_kiwxbi4y"
+    string: "https://tv-api.com/en/API/Top250Movies/k_zcuw1ytf"
 )!
+
+private enum ResponseError: Error {
+    case message(String)
+}
 
 struct MoviesLoader: MoviesLoading {
     private let networkClient = NetworkClient()
@@ -18,8 +22,9 @@ struct MoviesLoader: MoviesLoading {
                     let mostPopularMovies = try JSONDecoder().decode(MostPopularMovies.self, from: data)
                     guard mostPopularMovies.errorMessage == ""
                     else {
-                        struct ResponseError: Error {}
-                        throw ResponseError()
+                        throw ResponseError.message(
+                            mostPopularMovies.errorMessage
+                        )
                     }
                     handler(.success(mostPopularMovies))
                 } catch {
