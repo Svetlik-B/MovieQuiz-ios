@@ -30,12 +30,10 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showLoadingIndicator() {
-        activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
     
     private func hideLoadingIndicator() {
-        activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
     }
     
@@ -59,13 +57,15 @@ final class MovieQuizViewController: UIViewController {
         if isCorrect {
             correctAnswers += 1
             setImageBorder(color: UIColor(named: "YP Green"))
+            showLoadingIndicator()
         } else {
             setImageBorder(color: UIColor(named: "YP Red"))
+            showLoadingIndicator()
         }
         noButton.isEnabled = false
         yesButton.isEnabled = false
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.hideLoadingIndicator()
             self?.showNextQuestionOrResults()
         }
     }
@@ -102,11 +102,14 @@ final class MovieQuizViewController: UIViewController {
             questionFactory?.requestNextQuestion()
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
         imageView.layer.borderWidth = 8
+        showLoadingIndicator()
+        setImageBorder(color: nil)
+        activityIndicator.hidesWhenStopped = true
         
         self.statisticService = StatisticServiceImplementation()
         questionFactory = QuestionFactory(
@@ -148,7 +151,7 @@ final class MovieQuizViewController: UIViewController {
         let alertPresenter = ResultAlertPresenter(model: model)
         alertPresenter.present(on: self)
     }
-
+    
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let questionsAmount: Int = 10
@@ -174,7 +177,7 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
         showNetworkError(message: error.localizedDescription)
     }
     func didLoadDataFromServer() {
-        activityIndicator.isHidden = true
         questionFactory?.requestNextQuestion()
+        activityIndicator.stopAnimating()
     }
 }
