@@ -2,7 +2,6 @@ import UIKit
 
 struct ResultAlertPresenter {
     var model: AlertModel
-    weak var delegate: ResultAlertPresenterDelegate?
 }
 
 extension ResultAlertPresenter {
@@ -16,7 +15,7 @@ extension ResultAlertPresenter {
             title: model.buttonText,
             style: .default
         ) {  _ in
-            delegate?.onButtonTapped()
+            model.onButtonTap?()
         }
         alert.addAction(action)
         
