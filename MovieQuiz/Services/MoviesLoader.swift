@@ -8,8 +8,13 @@ private var mostPopularMoviesUrl = URL(
     string: "https://tv-api.com/en/API/Top250Movies/k_zcuw1ytf"
 )!
 
-private enum ResponseError: Error {
-    case message(String)
+private final class ResponseError: NSError, @unchecked Sendable {
+    override var localizedDescription: String {
+        return domain
+    }
+    convenience init(_ message: String) {
+        self.init(domain: message, code: 0, userInfo: [:])
+    }
 }
 
 struct MoviesLoader: MoviesLoading {
@@ -22,9 +27,7 @@ struct MoviesLoader: MoviesLoading {
                     let mostPopularMovies = try JSONDecoder().decode(MostPopularMovies.self, from: data)
                     guard mostPopularMovies.errorMessage == ""
                     else {
-                        throw ResponseError.message(
-                            mostPopularMovies.errorMessage
-                        )
+                        throw ResponseError(mostPopularMovies.errorMessage)
                     }
                     handler(.success(mostPopularMovies))
                 } catch {
