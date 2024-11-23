@@ -31,6 +31,8 @@ final class MovieQuizViewController: UIViewController {
     
     private func showLoadingIndicator() {
         activityIndicator.startAnimating()
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
     }
     
     private func hideLoadingIndicator() {
@@ -61,8 +63,6 @@ final class MovieQuizViewController: UIViewController {
         } else {
             setImageBorder(color: UIColor(named: "YP Red"))
         }
-        noButton.isEnabled = false
-        yesButton.isEnabled = false
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             self?.hideLoadingIndicator()
             self?.showNextQuestionOrResults()
