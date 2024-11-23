@@ -54,13 +54,12 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showAnswerResult(isCorrect: Bool) {
+        showLoadingIndicator()
         if isCorrect {
             correctAnswers += 1
             setImageBorder(color: UIColor(named: "YP Green"))
-            showLoadingIndicator()
         } else {
             setImageBorder(color: UIColor(named: "YP Red"))
-            showLoadingIndicator()
         }
         noButton.isEnabled = false
         yesButton.isEnabled = false
@@ -181,3 +180,4 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
         activityIndicator.stopAnimating()
     }
 }
+

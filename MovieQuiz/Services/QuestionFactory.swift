@@ -24,7 +24,6 @@ extension QuestionFactory: QuestionFactoryProtocol {
             }
             let imageData = try? Data(contentsOf: movie.resizedImageURL)
             if imageData == nil {
-//                AlertModel(title: "Ошибка", message: "Не удалось загрузить изображение", buttonText: "Failed to load image")
                 print("Failed to load image")
             }
             let rating = Float(movie.rating) ?? 0
