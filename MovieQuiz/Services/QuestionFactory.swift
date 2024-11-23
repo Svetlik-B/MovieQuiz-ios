@@ -16,9 +16,10 @@ extension QuestionFactory: QuestionFactoryProtocol {
         DispatchQueue.global().async { [weak self] in
             guard let movie = self?.movies.randomElement()
             else {
-                struct NoMovies: Error {}
                 DispatchQueue.main.async {
-                    self?.delegate?.didFailToLoadData(with: NoMovies())
+                    self?.delegate?.didFailToLoadData(
+                        with: SimpleError("нет фильмов для вопроса")
+                    )
                 }
                 return
             }

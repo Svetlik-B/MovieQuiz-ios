@@ -8,15 +8,6 @@ private var mostPopularMoviesUrl = URL(
     string: "https://tv-api.com/en/API/Top250Movies/k_zcuw1ytf"
 )!
 
-private final class ResponseError: NSError, @unchecked Sendable {
-    override var localizedDescription: String {
-        return domain
-    }
-    convenience init(_ message: String) {
-        self.init(domain: message, code: 0, userInfo: [:])
-    }
-}
-
 struct MoviesLoader: MoviesLoading {
     private let networkClient = NetworkClient()
     func loadMovies(handler: @escaping (Result<MostPopularMovies, Error>) -> Void) {
@@ -27,7 +18,7 @@ struct MoviesLoader: MoviesLoading {
                     let mostPopularMovies = try JSONDecoder().decode(MostPopularMovies.self, from: data)
                     guard mostPopularMovies.errorMessage == ""
                     else {
-                        throw ResponseError(mostPopularMovies.errorMessage)
+                        throw SimpleError(mostPopularMovies.errorMessage)
                     }
                     handler(.success(mostPopularMovies))
                 } catch {
