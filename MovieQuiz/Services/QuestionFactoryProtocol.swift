@@ -1,4 +1,12 @@
+//
+//  QuizFactoryProtocol.swift
+//  MovieQuiz
+//
+//
+
+import Foundation
+
 protocol QuestionFactoryProtocol {
-    func requestNextQuestion()
     func loadData()
+    func requestNextQuestion()
 }
