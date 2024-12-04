@@ -1,10 +1,3 @@
-//
-//  MovieQuizUITests.swift
-//  MovieQuizUITests
-//
-//  Created by Svetlana Bochkareva on 02.12.2024.
-//
-
 import XCTest
 
 final class MovieQuizUITests: XCTestCase {
@@ -28,20 +21,17 @@ final class MovieQuizUITests: XCTestCase {
     func testYesButton() {
         sleep(3)
         let firstPoster = app.images["Poster"]
-        let firstPosterData = firstPoster.screenshot().pngRepresentation
+        let firstPosterData = firstPoster.screenshot()
         
         app.buttons["Yes"].tap()
         sleep(3)
         
         let secondPoster = app.images["Poster"]
-        let secondPosterData = secondPoster.screenshot().pngRepresentation
-        
+        let secondPosterData = secondPoster.screenshot()
         let indexLabel = app.staticTexts["Index"]
         
         XCTAssertNotEqual(firstPosterData, secondPosterData)
-        indexLabel.label
         XCTAssertEqual(indexLabel.label, "2/10")
-
     }
     
     func testNoButton() {
@@ -62,18 +52,42 @@ final class MovieQuizUITests: XCTestCase {
         XCTAssertEqual(indexLabel.label, "2/10")
     }
     
-    @MainActor
-    func testExample() throws {
-        let app = XCUIApplication()
-        app.launch()
+    func testGameFinish() {
+        for _ in 1...10 {
+            let button = app.buttons["Нет"]
+            guard button.wait(for: \.isHittable, toEqual: true, timeout: 5)
+            else {
+                XCTFail("Button not found")
+                return
+            }
+            button.tap()
+        }
+
+        let alert = app.alerts["Этот раунд окончен!"]
+        guard alert.waitForExistence(timeout: 5)
+        else {
+            XCTFail("Alert not found")
+            return
+        }
+        XCTAssertTrue(alert.label == "Этот раунд окончен!")
+        XCTAssertTrue(alert.buttons.firstMatch.label == "Сыграть ещё раз")
     }
 
-    @MainActor
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
+    func testAlertDismiss() {
+        sleep(2)
+        for _ in 1...10 {
+            app.buttons["No"].tap()
+            sleep(2)
         }
+        
+        let alert = app.alerts["Этот раунд окончен!"]
+        alert.buttons.firstMatch.tap()
+        
+        sleep(2)
+        
+        let indexLabel = app.staticTexts["Index"]
+        
+        XCTAssertFalse(alert.exists)
+        XCTAssertTrue(indexLabel.label == "1/10")
     }
 }
