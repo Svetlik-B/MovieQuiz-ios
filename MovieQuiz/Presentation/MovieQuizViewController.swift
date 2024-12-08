@@ -37,22 +37,12 @@ extension MovieQuizViewController {
             self?.showNextQuestionOrResults()
         }
     }
-}
-
-private extension MovieQuizViewController {
-    @IBAction func yesButtonClicked(_ sender: UIButton) {
-        movieQuizPresenter.userAnswerYes()
-    }
-    @IBAction func noButtonClicked(_ sender: UIButton) {
-        movieQuizPresenter.userAnswerNo()
-    }
-    func showLoadingIndicator() {
-        activityIndicator.startAnimating()
-        yesButton.isEnabled = false
-        noButton.isEnabled = false
-    }
-    func hideLoadingIndicator() {
-        activityIndicator.stopAnimating()
+    func show(quiz step: QuizStepViewModel) {
+        counterLabel.text = step.questionNumber
+        imageView.image = step.image
+        textLabel.text = step.question
+        yesButton.isEnabled = true
+        noButton.isEnabled = true
     }
     func showNetworkError(message: String) {
         hideLoadingIndicator()
@@ -68,6 +58,23 @@ private extension MovieQuizViewController {
         }
         let alertPresenter = ResultAlertPresenter(model: model)
         alertPresenter.present(on: self)
+    }
+    func hideLoadingIndicator() {
+        activityIndicator.stopAnimating()
+    }
+}
+
+private extension MovieQuizViewController {
+    @IBAction func yesButtonClicked(_ sender: UIButton) {
+        movieQuizPresenter.userAnswerYes()
+    }
+    @IBAction func noButtonClicked(_ sender: UIButton) {
+        movieQuizPresenter.userAnswerNo()
+    }
+    func showLoadingIndicator() {
+        activityIndicator.startAnimating()
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
     }
     func setImageBorder(color: UIColor?) {
         guard let color else {
@@ -100,13 +107,6 @@ private extension MovieQuizViewController {
             movieQuizPresenter.questionFactory?.requestNextQuestion()
         }
     }
-    func show(quiz step: QuizStepViewModel) {
-        counterLabel.text = step.questionNumber
-        imageView.image = step.image
-        textLabel.text = step.question
-        yesButton.isEnabled = true
-        noButton.isEnabled = true
-    }
     func show(quiz result: QuizResultsViewModel) {
         let model = AlertModel(
             title: result.title,
@@ -122,25 +122,3 @@ private extension MovieQuizViewController {
         alertPresenter.present(on: self)
     }
 }
-
-// MARK:  QuestionFactoryDelegate
-extension MovieQuizViewController: QuestionFactoryDelegate {
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question else {
-            return
-        }
-        movieQuizPresenter.currentQuestion = question
-        let viewModel = movieQuizPresenter.convert(model: question)
-        DispatchQueue.main.async { [weak self] in
-            self?.show(quiz: viewModel)
-        }
-    }
-    func didFailToLoadData(with error: Error) {
-        showNetworkError(message: error.localizedDescription)
-    }
-    func didLoadDataFromServer() {
-        movieQuizPresenter.questionFactory?.requestNextQuestion()
-        activityIndicator.stopAnimating()
-    }
-}
-

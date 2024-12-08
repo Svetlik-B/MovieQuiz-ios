@@ -1,6 +1,6 @@
 import UIKit
 
-struct MovieQuizPresenter {
+class MovieQuizPresenter {
     let questionsAmount: Int = 10
     var currentQuestionIndex = 0
     var correctAnswers = 0
@@ -14,10 +14,9 @@ struct MovieQuizPresenter {
         self.statisticService = StatisticServiceImplementation()
         self.questionFactory = QuestionFactory(
             moviesLoader: MoviesLoader(),
-            delegate: viewController
+            delegate: self
         )
         self.questionFactory?.loadData()
-
     }
 }
 
@@ -42,5 +41,26 @@ extension MovieQuizPresenter {
             question: model.text,
             questionNumber: questionNumber
         )
+    }
+}
+
+// MARK: - QuestionFactoryDelegate
+extension MovieQuizPresenter: QuestionFactoryDelegate {
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question else {
+            return
+        }
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        DispatchQueue.main.async { [weak self] in
+            self?.viewController?.show(quiz: viewModel)
+        }
+    }
+    func didFailToLoadData(with error: Error) {
+        viewController?.showNetworkError(message: error.localizedDescription)
+    }
+    func didLoadDataFromServer() {
+        questionFactory?.requestNextQuestion()
+        viewController?.hideLoadingIndicator()
     }
 }
