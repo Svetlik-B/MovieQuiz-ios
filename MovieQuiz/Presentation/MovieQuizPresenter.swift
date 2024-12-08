@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 class MovieQuizPresenter {
     let questionsAmount: Int = 10
@@ -46,9 +46,9 @@ extension MovieQuizPresenter {
         viewController?.showLoadingIndicator()
         if isCorrect {
             correctAnswers += 1
-            viewController?.setImageBorder(color: UIColor(named: "YP Green"))
+            viewController?.indicateCorrectAnswer()
         } else {
-            viewController?.setImageBorder(color: UIColor(named: "YP Red"))
+            viewController?.indicateWrongAnswer()
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             self?.viewController?.hideLoadingIndicator()
@@ -74,7 +74,7 @@ extension MovieQuizPresenter {
             )
             show(quiz: viewModel)
         } else {
-            viewController?.setImageBorder(color: nil)
+            viewController?.removeAnswerCorrectnessIndication()
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
         }
@@ -85,7 +85,7 @@ extension MovieQuizPresenter {
             message: result.text,
             buttonText: result.buttonText
         ) { [weak self] in
-            self?.viewController?.setImageBorder(color: nil)
+            self?.viewController?.removeAnswerCorrectnessIndication()
             self?.correctAnswers = 0
             self?.currentQuestionIndex = 0
             self?.questionFactory?.requestNextQuestion()

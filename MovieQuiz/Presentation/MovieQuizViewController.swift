@@ -19,7 +19,7 @@ extension MovieQuizViewController {
         imageView.layer.cornerRadius = 20
         imageView.layer.borderWidth = 8
         showLoadingIndicator()
-        setImageBorder(color: nil)
+        removeAnswerCorrectnessIndication()
         activityIndicator.hidesWhenStopped = true
         
         movieQuizPresenter = MovieQuizPresenter(viewController: self)
@@ -43,12 +43,14 @@ extension MovieQuizViewController {
     func hideLoadingIndicator() {
         activityIndicator.stopAnimating()
     }
-    func setImageBorder(color: UIColor?) {
-        guard let color else {
-            imageView.layer.borderColor = UIColor.clear.cgColor
-            return
-        }
-        imageView.layer.borderColor = color.cgColor
+    func indicateWrongAnswer() {
+        imageView.layer.borderColor = UIColor(named: "YP Red")?.cgColor
+    }
+    func indicateCorrectAnswer() {
+        imageView.layer.borderColor = UIColor(named: "YP Green")?.cgColor
+    }
+    func removeAnswerCorrectnessIndication() {
+        imageView.layer.borderColor = nil
     }
 }
 
