@@ -2,12 +2,10 @@ import UIKit
 
 
 final class MovieQuizViewController: UIViewController {
-    // MARK: - Lifecycle
-    
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
-    @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet private var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var noButton: UIButton!
     @IBOutlet private weak var yesButton: UIButton!
     
@@ -23,29 +21,40 @@ extension MovieQuizViewController {
         showLoadingIndicator()
         setImageBorder(color: nil)
         activityIndicator.hidesWhenStopped = true
-
+        
         movieQuizPresenter = MovieQuizPresenter(viewController: self)
     }
+    func showAnswerResult(isCorrect: Bool) {
+        showLoadingIndicator()
+        if isCorrect {
+            movieQuizPresenter.correctAnswers += 1
+            setImageBorder(color: UIColor(named: "YP Green"))
+        } else {
+            setImageBorder(color: UIColor(named: "YP Red"))
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.hideLoadingIndicator()
+            self?.showNextQuestionOrResults()
+        }
+    }
+}
 
-    @IBAction private func yesButtonClicked(_ sender: UIButton) {
+private extension MovieQuizViewController {
+    @IBAction func yesButtonClicked(_ sender: UIButton) {
         movieQuizPresenter.userAnswerYes()
     }
-    
-    @IBAction private func noButtonClicked(_ sender: UIButton) {
+    @IBAction func noButtonClicked(_ sender: UIButton) {
         movieQuizPresenter.userAnswerNo()
     }
-    
-    private func showLoadingIndicator() {
+    func showLoadingIndicator() {
         activityIndicator.startAnimating()
         yesButton.isEnabled = false
         noButton.isEnabled = false
     }
-    
-    private func hideLoadingIndicator() {
+    func hideLoadingIndicator() {
         activityIndicator.stopAnimating()
     }
-    
-    private func showNetworkError(message: String) {
+    func showNetworkError(message: String) {
         hideLoadingIndicator()
         let model = AlertModel(
             title: "Ошибка",
@@ -60,30 +69,14 @@ extension MovieQuizViewController {
         let alertPresenter = ResultAlertPresenter(model: model)
         alertPresenter.present(on: self)
     }
-    
-    func showAnswerResult(isCorrect: Bool) {
-        showLoadingIndicator()
-        if isCorrect {
-            movieQuizPresenter.correctAnswers += 1
-            setImageBorder(color: UIColor(named: "YP Green"))
-        } else {
-            setImageBorder(color: UIColor(named: "YP Red"))
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.hideLoadingIndicator()
-            self?.showNextQuestionOrResults()
-        }
-    }
-    
-    private func setImageBorder(color: UIColor?) {
+    func setImageBorder(color: UIColor?) {
         guard let color else {
             imageView.layer.borderColor = UIColor.clear.cgColor
             return
         }
         imageView.layer.borderColor = color.cgColor
     }
-    
-    private func showNextQuestionOrResults() {
+    func showNextQuestionOrResults() {
         if movieQuizPresenter.currentQuestionIndex == movieQuizPresenter.questionsAmount - 1 {
             self.movieQuizPresenter.statisticService?.store(
                 correct: self.movieQuizPresenter.correctAnswers,
@@ -107,8 +100,7 @@ extension MovieQuizViewController {
             movieQuizPresenter.questionFactory?.requestNextQuestion()
         }
     }
-        
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+    func convert(model: QuizQuestion) -> QuizStepViewModel {
         let total = movieQuizPresenter.questionsAmount
         let questionNumber = "\(movieQuizPresenter.currentQuestionIndex + 1)/\(total)"
         return .init(
@@ -117,16 +109,14 @@ extension MovieQuizViewController {
             questionNumber: questionNumber
         )
     }
-    
-    private func show(quiz step: QuizStepViewModel) {
+    func show(quiz step: QuizStepViewModel) {
         counterLabel.text = step.questionNumber
         imageView.image = step.image
         textLabel.text = step.question
         yesButton.isEnabled = true
         noButton.isEnabled = true
     }
-    
-    private func show(quiz result: QuizResultsViewModel) {
+    func show(quiz result: QuizResultsViewModel) {
         let model = AlertModel(
             title: result.title,
             message: result.text,
