@@ -31,21 +31,6 @@ extension MovieQuizViewController {
         yesButton.isEnabled = true
         noButton.isEnabled = true
     }
-    func showNetworkError(message: String) {
-        hideLoadingIndicator()
-        let model = AlertModel(
-            title: "Ошибка",
-            message: message,
-            buttonText: "Попробовать еще раз"
-        ) { [weak self] in
-            guard let self = self else { return }
-            self.movieQuizPresenter.currentQuestionIndex = 0
-            self.movieQuizPresenter.correctAnswers = 0
-            self.movieQuizPresenter.questionFactory?.requestNextQuestion()
-        }
-        let alertPresenter = ResultAlertPresenter(model: model)
-        alertPresenter.present(on: self)
-    }
     func showLoadingIndicator() {
         activityIndicator.startAnimating()
         yesButton.isEnabled = false
