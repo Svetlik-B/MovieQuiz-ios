@@ -20,3 +20,12 @@ struct MovieQuizPresenter {
 
     }
 }
+
+extension MovieQuizPresenter {
+    func userAnswerYes() {
+        let answer = true
+        guard let currentQuestion else { return }
+        let correctAnswer = currentQuestion.correctAnswer
+        viewController?.showAnswerResult(isCorrect: answer == correctAnswer)
+    }
+}

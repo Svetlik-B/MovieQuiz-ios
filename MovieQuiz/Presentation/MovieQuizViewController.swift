@@ -38,13 +38,7 @@ extension MovieQuizViewController {
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        let answer = true
-        guard let currentQuestion = movieQuizPresenter.currentQuestion
-        else {
-            return
-        }
-        let correctAnswer = currentQuestion.correctAnswer
-        showAnswerResult(isCorrect: answer == correctAnswer)
+        movieQuizPresenter.userAnswerYes()
     }
     
     private func showLoadingIndicator() {
@@ -73,7 +67,7 @@ extension MovieQuizViewController {
         alertPresenter.present(on: self)
     }
     
-    private func showAnswerResult(isCorrect: Bool) {
+    func showAnswerResult(isCorrect: Bool) {
         showLoadingIndicator()
         if isCorrect {
             movieQuizPresenter.correctAnswers += 1
