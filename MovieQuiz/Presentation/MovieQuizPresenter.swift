@@ -37,7 +37,7 @@ extension MovieQuizPresenter {
         let total = questionsAmount
         let questionNumber = "\(currentQuestionIndex + 1)/\(total)"
         return .init(
-            image: UIImage(data: model.image),
+            imageData: model.imageData,
             question: model.text,
             questionNumber: questionNumber
         )

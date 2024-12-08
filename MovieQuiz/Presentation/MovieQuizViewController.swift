@@ -25,8 +25,12 @@ extension MovieQuizViewController {
         movieQuizPresenter = MovieQuizPresenter(viewController: self)
     }
     func show(quiz step: QuizStepViewModel) {
+        var image: UIImage? = nil
+        if let data = step.imageData {
+            image = UIImage(data: data)
+        }
         counterLabel.text = step.questionNumber
-        imageView.image = step.image
+        imageView.image = image
         textLabel.text = step.question
         yesButton.isEnabled = true
         noButton.isEnabled = true
