@@ -72,11 +72,27 @@ extension MovieQuizPresenter {
                 text: text,
                 buttonText: "Сыграть ещё раз"
             )
-            viewController?.show(quiz: viewModel)
+            show(quiz: viewModel)
         } else {
             viewController?.setImageBorder(color: nil)
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
+        }
+    }
+    func show(quiz result: QuizResultsViewModel) {
+        let model = AlertModel(
+            title: result.title,
+            message: result.text,
+            buttonText: result.buttonText
+        ) { [weak self] in
+            self?.viewController?.setImageBorder(color: nil)
+            self?.correctAnswers = 0
+            self?.currentQuestionIndex = 0
+            self?.questionFactory?.requestNextQuestion()
+        }
+        if let viewController {
+            let alertPresenter = ResultAlertPresenter(model: model)
+            alertPresenter.present(on: viewController)
         }
     }
 }
