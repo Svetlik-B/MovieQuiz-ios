@@ -42,6 +42,30 @@ extension MovieQuizPresenter {
             questionNumber: questionNumber
         )
     }
+    func showNextQuestionOrResults() {
+        if currentQuestionIndex == questionsAmount - 1 {
+            statisticService?.store(
+                correct: correctAnswers,
+                total: questionsAmount
+            )
+            let text = """
+                Ваш результат \(correctAnswers)/\(questionsAmount)
+                Количество сыгранных квизов: \(statisticService?.gamesCount ?? 0)
+                Рекорд: \(statisticService?.bestGame.description ?? "")
+                Средняя точность: \(String(format: "%.2f", statisticService?.totalAccuracy ?? 0))%
+                """
+            let viewModel = QuizResultsViewModel(
+                title: "Этот раунд окончен!",
+                text: text,
+                buttonText: "Сыграть ещё раз"
+            )
+            viewController?.show(quiz: viewModel)
+        } else {
+            viewController?.setImageBorder(color: nil)
+            currentQuestionIndex += 1
+            questionFactory?.requestNextQuestion()
+        }
+    }
 }
 
 // MARK: - QuestionFactoryDelegate

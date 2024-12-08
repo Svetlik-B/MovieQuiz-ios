@@ -34,7 +34,7 @@ extension MovieQuizViewController {
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             self?.hideLoadingIndicator()
-            self?.showNextQuestionOrResults()
+            self?.movieQuizPresenter.showNextQuestionOrResults()
         }
     }
     func show(quiz step: QuizStepViewModel) {
@@ -43,6 +43,20 @@ extension MovieQuizViewController {
         textLabel.text = step.question
         yesButton.isEnabled = true
         noButton.isEnabled = true
+    }
+    func show(quiz result: QuizResultsViewModel) {
+        let model = AlertModel(
+            title: result.title,
+            message: result.text,
+            buttonText: result.buttonText
+        ) { [weak self] in
+            self?.setImageBorder(color: nil)
+            self?.movieQuizPresenter.correctAnswers = 0
+            self?.movieQuizPresenter.currentQuestionIndex = 0
+            self?.movieQuizPresenter.questionFactory?.requestNextQuestion()
+        }
+        let alertPresenter = ResultAlertPresenter(model: model)
+        alertPresenter.present(on: self)
     }
     func showNetworkError(message: String) {
         hideLoadingIndicator()
@@ -62,6 +76,13 @@ extension MovieQuizViewController {
     func hideLoadingIndicator() {
         activityIndicator.stopAnimating()
     }
+    func setImageBorder(color: UIColor?) {
+        guard let color else {
+            imageView.layer.borderColor = UIColor.clear.cgColor
+            return
+        }
+        imageView.layer.borderColor = color.cgColor
+    }
 }
 
 private extension MovieQuizViewController {
@@ -75,50 +96,5 @@ private extension MovieQuizViewController {
         activityIndicator.startAnimating()
         yesButton.isEnabled = false
         noButton.isEnabled = false
-    }
-    func setImageBorder(color: UIColor?) {
-        guard let color else {
-            imageView.layer.borderColor = UIColor.clear.cgColor
-            return
-        }
-        imageView.layer.borderColor = color.cgColor
-    }
-    func showNextQuestionOrResults() {
-        if movieQuizPresenter.currentQuestionIndex == movieQuizPresenter.questionsAmount - 1 {
-            self.movieQuizPresenter.statisticService?.store(
-                correct: self.movieQuizPresenter.correctAnswers,
-                total: self.movieQuizPresenter.questionsAmount
-            )
-            let text = """
-                Ваш результат \(movieQuizPresenter.correctAnswers)/\(movieQuizPresenter.questionsAmount)
-                Количество сыгранных квизов: \(self.movieQuizPresenter.statisticService?.gamesCount ?? 0)
-                Рекорд: \(self.movieQuizPresenter.statisticService?.bestGame.description ?? "")
-                Средняя точность: \(String(format: "%.2f", self.movieQuizPresenter.statisticService?.totalAccuracy ?? 0))%
-                """
-            let viewModel = QuizResultsViewModel(
-                title: "Этот раунд окончен!",
-                text: text,
-                buttonText: "Сыграть ещё раз"
-            )
-            show(quiz: viewModel)
-        } else {
-            setImageBorder(color: nil)
-            movieQuizPresenter.currentQuestionIndex += 1
-            movieQuizPresenter.questionFactory?.requestNextQuestion()
-        }
-    }
-    func show(quiz result: QuizResultsViewModel) {
-        let model = AlertModel(
-            title: result.title,
-            message: result.text,
-            buttonText: result.buttonText
-        ) { [weak self] in
-            self?.setImageBorder(color: nil)
-            self?.movieQuizPresenter.correctAnswers = 0
-            self?.movieQuizPresenter.currentQuestionIndex = 0
-            self?.movieQuizPresenter.questionFactory?.requestNextQuestion()
-        }
-        let alertPresenter = ResultAlertPresenter(model: model)
-        alertPresenter.present(on: self)
     }
 }
