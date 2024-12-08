@@ -24,19 +24,6 @@ extension MovieQuizViewController {
         
         movieQuizPresenter = MovieQuizPresenter(viewController: self)
     }
-    func showAnswerResult(isCorrect: Bool) {
-        showLoadingIndicator()
-        if isCorrect {
-            movieQuizPresenter.correctAnswers += 1
-            setImageBorder(color: UIColor(named: "YP Green"))
-        } else {
-            setImageBorder(color: UIColor(named: "YP Red"))
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.hideLoadingIndicator()
-            self?.movieQuizPresenter.showNextQuestionOrResults()
-        }
-    }
     func show(quiz step: QuizStepViewModel) {
         counterLabel.text = step.questionNumber
         imageView.image = step.image
@@ -73,6 +60,11 @@ extension MovieQuizViewController {
         let alertPresenter = ResultAlertPresenter(model: model)
         alertPresenter.present(on: self)
     }
+    func showLoadingIndicator() {
+        activityIndicator.startAnimating()
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
+    }
     func hideLoadingIndicator() {
         activityIndicator.stopAnimating()
     }
@@ -91,10 +83,5 @@ private extension MovieQuizViewController {
     }
     @IBAction func noButtonClicked(_ sender: UIButton) {
         movieQuizPresenter.userAnswerNo()
-    }
-    func showLoadingIndicator() {
-        activityIndicator.startAnimating()
-        yesButton.isEnabled = false
-        noButton.isEnabled = false
     }
 }

@@ -25,13 +25,13 @@ extension MovieQuizPresenter {
         let answer = true
         guard let currentQuestion else { return }
         let correctAnswer = currentQuestion.correctAnswer
-        viewController?.showAnswerResult(isCorrect: answer == correctAnswer)
+        showAnswerResult(isCorrect: answer == correctAnswer)
     }
     func userAnswerNo() {
         let answer = false
         guard let currentQuestion else { return }
         let correctAnswer = currentQuestion.correctAnswer
-        viewController?.showAnswerResult(isCorrect: answer == correctAnswer)
+        showAnswerResult(isCorrect: answer == correctAnswer)
     }
     func convert(model: QuizQuestion) -> QuizStepViewModel {
         let total = questionsAmount
@@ -41,6 +41,19 @@ extension MovieQuizPresenter {
             question: model.text,
             questionNumber: questionNumber
         )
+    }
+    func showAnswerResult(isCorrect: Bool) {
+        viewController?.showLoadingIndicator()
+        if isCorrect {
+            correctAnswers += 1
+            viewController?.setImageBorder(color: UIColor(named: "YP Green"))
+        } else {
+            viewController?.setImageBorder(color: UIColor(named: "YP Red"))
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.viewController?.hideLoadingIndicator()
+            self?.showNextQuestionOrResults()
+        }
     }
     func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
