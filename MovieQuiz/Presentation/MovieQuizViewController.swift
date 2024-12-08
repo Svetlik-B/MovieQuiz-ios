@@ -27,18 +27,12 @@ extension MovieQuizViewController {
         movieQuizPresenter = MovieQuizPresenter(viewController: self)
     }
 
-    @IBAction private func noButtonClicked(_ sender: UIButton) {
-        let answer = false
-        guard let currentQuestion = movieQuizPresenter.currentQuestion
-        else {
-            return
-        }
-        let correctAnswer = currentQuestion.correctAnswer
-        showAnswerResult(isCorrect: answer == correctAnswer)
-    }
-    
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         movieQuizPresenter.userAnswerYes()
+    }
+    
+    @IBAction private func noButtonClicked(_ sender: UIButton) {
+        movieQuizPresenter.userAnswerNo()
     }
     
     private func showLoadingIndicator() {

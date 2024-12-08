@@ -28,4 +28,10 @@ extension MovieQuizPresenter {
         let correctAnswer = currentQuestion.correctAnswer
         viewController?.showAnswerResult(isCorrect: answer == correctAnswer)
     }
+    func userAnswerNo() {
+        let answer = false
+        guard let currentQuestion else { return }
+        let correctAnswer = currentQuestion.correctAnswer
+        viewController?.showAnswerResult(isCorrect: answer == correctAnswer)
+    }
 }
