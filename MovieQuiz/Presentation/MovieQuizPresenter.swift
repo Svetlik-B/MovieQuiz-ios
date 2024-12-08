@@ -9,7 +9,14 @@ struct MovieQuizPresenter {
     var statisticService: StatisticService?
     
     weak var viewController: MovieQuizViewController?
-    init(view: MovieQuizViewController) {
-        self.viewController = view
+    init(viewController: MovieQuizViewController) {
+        self.viewController = viewController
+        self.statisticService = StatisticServiceImplementation()
+        self.questionFactory = QuestionFactory(
+            moviesLoader: MoviesLoader(),
+            delegate: viewController
+        )
+        self.questionFactory?.loadData()
+
     }
 }

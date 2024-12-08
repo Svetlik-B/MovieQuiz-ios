@@ -17,20 +17,14 @@ final class MovieQuizViewController: UIViewController {
 extension MovieQuizViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        movieQuizPresenter = MovieQuizPresenter(view: self)
         
         imageView.layer.cornerRadius = 20
         imageView.layer.borderWidth = 8
         showLoadingIndicator()
         setImageBorder(color: nil)
         activityIndicator.hidesWhenStopped = true
-        
-        self.movieQuizPresenter.statisticService = StatisticServiceImplementation()
-        self.movieQuizPresenter.questionFactory = QuestionFactory(
-            moviesLoader: MoviesLoader(),
-            delegate: self
-        )
-        self.movieQuizPresenter.questionFactory?.loadData()
+
+        movieQuizPresenter = MovieQuizPresenter(viewController: self)
     }
 
     @IBAction private func noButtonClicked(_ sender: UIButton) {
