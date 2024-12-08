@@ -11,6 +11,28 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private weak var noButton: UIButton!
     @IBOutlet private weak var yesButton: UIButton!
     
+    private var movieQuizPresenter: MovieQuizPresenter!
+}
+ 
+extension MovieQuizViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        movieQuizPresenter = MovieQuizPresenter(view: self)
+        
+        imageView.layer.cornerRadius = 20
+        imageView.layer.borderWidth = 8
+        showLoadingIndicator()
+        setImageBorder(color: nil)
+        activityIndicator.hidesWhenStopped = true
+        
+        self.movieQuizPresenter.statisticService = StatisticServiceImplementation()
+        self.movieQuizPresenter.questionFactory = QuestionFactory(
+            moviesLoader: MoviesLoader(),
+            delegate: self
+        )
+        self.movieQuizPresenter.questionFactory?.loadData()
+    }
+
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         let answer = false
         guard let currentQuestion = movieQuizPresenter.currentQuestion
@@ -103,23 +125,7 @@ final class MovieQuizViewController: UIViewController {
             movieQuizPresenter.questionFactory?.requestNextQuestion()
         }
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        imageView.layer.cornerRadius = 20
-        imageView.layer.borderWidth = 8
-        showLoadingIndicator()
-        setImageBorder(color: nil)
-        activityIndicator.hidesWhenStopped = true
         
-        self.movieQuizPresenter.statisticService = StatisticServiceImplementation()
-        self.movieQuizPresenter.questionFactory = QuestionFactory(
-            moviesLoader: MoviesLoader(),
-            delegate: self
-        )
-        self.movieQuizPresenter.questionFactory?.loadData()
-    }
-    
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let total = movieQuizPresenter.questionsAmount
         let questionNumber = "\(movieQuizPresenter.currentQuestionIndex + 1)/\(total)"
@@ -152,8 +158,6 @@ final class MovieQuizViewController: UIViewController {
         let alertPresenter = ResultAlertPresenter(model: model)
         alertPresenter.present(on: self)
     }
-    
-    private var movieQuizPresenter = MovieQuizPresenter()
 }
 
 // MARK:  QuestionFactoryDelegate

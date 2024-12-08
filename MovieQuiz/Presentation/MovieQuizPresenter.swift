@@ -7,4 +7,9 @@ struct MovieQuizPresenter {
     var currentQuestion: QuizQuestion?
     var questionFactory: QuestionFactoryProtocol?
     var statisticService: StatisticService?
+    
+    weak var viewController: MovieQuizViewController?
+    init(view: MovieQuizViewController) {
+        self.viewController = view
+    }
 }
