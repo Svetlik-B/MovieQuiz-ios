@@ -21,14 +21,7 @@ class MovieQuizPresenter {
 }
 
 extension MovieQuizPresenter {
-    func userAnswerYes() {
-        let answer = true
-        guard let currentQuestion else { return }
-        let correctAnswer = currentQuestion.correctAnswer
-        showAnswerResult(isCorrect: answer == correctAnswer)
-    }
-    func userAnswerNo() {
-        let answer = false
+    func set(answer: Bool) {
         guard let currentQuestion else { return }
         let correctAnswer = currentQuestion.correctAnswer
         showAnswerResult(isCorrect: answer == correctAnswer)

@@ -56,9 +56,9 @@ extension MovieQuizViewController {
 
 private extension MovieQuizViewController {
     @IBAction func yesButtonClicked(_ sender: UIButton) {
-        movieQuizPresenter.userAnswerYes()
+        movieQuizPresenter.set(answer: true)
     }
     @IBAction func noButtonClicked(_ sender: UIButton) {
-        movieQuizPresenter.userAnswerNo()
+        movieQuizPresenter.set(answer: false)
     }
 }
