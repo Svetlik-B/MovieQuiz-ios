@@ -34,4 +34,13 @@ extension MovieQuizPresenter {
         let correctAnswer = currentQuestion.correctAnswer
         viewController?.showAnswerResult(isCorrect: answer == correctAnswer)
     }
+    func convert(model: QuizQuestion) -> QuizStepViewModel {
+        let total = questionsAmount
+        let questionNumber = "\(currentQuestionIndex + 1)/\(total)"
+        return .init(
+            image: UIImage(data: model.image),
+            question: model.text,
+            questionNumber: questionNumber
+        )
+    }
 }

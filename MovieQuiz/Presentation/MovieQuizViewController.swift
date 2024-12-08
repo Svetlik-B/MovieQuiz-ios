@@ -100,15 +100,6 @@ private extension MovieQuizViewController {
             movieQuizPresenter.questionFactory?.requestNextQuestion()
         }
     }
-    func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let total = movieQuizPresenter.questionsAmount
-        let questionNumber = "\(movieQuizPresenter.currentQuestionIndex + 1)/\(total)"
-        return .init(
-            image: UIImage(data: model.image),
-            question: model.text,
-            questionNumber: questionNumber
-        )
-    }
     func show(quiz step: QuizStepViewModel) {
         counterLabel.text = step.questionNumber
         imageView.image = step.image
@@ -139,7 +130,7 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
             return
         }
         movieQuizPresenter.currentQuestion = question
-        let viewModel = convert(model: question)
+        let viewModel = movieQuizPresenter.convert(model: question)
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
