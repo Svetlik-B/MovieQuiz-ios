@@ -9,7 +9,7 @@ class MovieQuizPresenter {
     var statisticService: StatisticService?
     
     weak var viewController: MovieQuizViewController?
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewController?) {
         self.viewController = viewController
         self.statisticService = StatisticServiceImplementation()
         self.questionFactory = QuestionFactory(
