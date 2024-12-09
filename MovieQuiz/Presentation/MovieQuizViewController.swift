@@ -50,7 +50,7 @@ extension MovieQuizViewController {
         imageView.layer.borderColor = UIColor(named: "YP Green")?.cgColor
     }
     func removeAnswerCorrectnessIndication() {
-        imageView.layer.borderColor = nil
+        imageView.layer.borderColor = UIColor.clear.cgColor
     }
 }
 
